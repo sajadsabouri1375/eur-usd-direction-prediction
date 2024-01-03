@@ -1,22 +1,18 @@
 '''
-    This class includes required methods and properties to request data online using TraderMadeAPI.
+    This class includes required methods and properties to request data online using yfinance.
 '''
 
 from data_provider_abstract import DataProviderAbstract, DataProviderSource
-import tradermade as tm
 import pandas as pd
 import os
+import yfinance as yf
 
 
-class DataProviderTraderMade(DataProviderAbstract):
+class DataProviderYfinance(DataProviderAbstract):
     
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
-        
-        self._api_key = kwargs.get('api_key')
-        
-        tm.set_rest_api_key(self._api_key)
-
+                
     def save_data_to_local_machine(self, saving_directory, data):
         
         os.makedirs(saving_directory, exist_ok=True)
@@ -37,13 +33,10 @@ class DataProviderTraderMade(DataProviderAbstract):
 
         if self._data_provider_source == DataProviderSource.EXTERNAL:
                             
-            data = tm.timeseries(
-                currency=symbol,
-                start="2023-01-03",
-                end="2024-01-03",
-                interval="daily"
-            )  
-        
+            symbol_data = yf.Ticker(symbol) 
+            
+            data = symbol_data.history(period="max", interval="1d")
+            
             if self._save_data_on_each_request:
                 self.save_data_to_local_machine(data_local_directory, data)
 

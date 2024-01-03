@@ -56,7 +56,6 @@ class DataProviderAlphaVantage(DataProviderAbstract):
                 data, meta_data = self._api_interface.get_daily(symbol=symbol, outputsize='full')
         
             if self._save_data_on_each_request:
-                
                 self.save_data_to_local_machine(data_local_directory, data, meta_data)
 
         elif self._data_provider_source == DataProviderSource.LOCAL:
