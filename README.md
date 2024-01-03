@@ -38,4 +38,37 @@ To make sure that the downloaded timeseries is valid, we need to verify some stu
 - Missing Values: All main 4 fields of the candles must have values. If there are missing values, we need to fill them with appropriate alternatives.
 - Type Integrity: All main 4 fields must be of type float. 
 - Forex market hours are from Monday to Friday. Thus, there must not be values on Saturdays and Sundays.
-- Filterin Columns which are not useful.
+- Filtering Columns which are not useful.
+
+".py" scripts explained:
+- data_preprocessing.py: This scripts contains required classes to verify data integrity and prepareing dataset for feature extraction.
+- test_data_preprocessing.py: This script would verify dataset integrity and make sure that the dataset is ready to be used for feature extraction.
+
+## Feature Extraction
+
+### Input Features
+Now that we have prepared a verified dataset for EUR/USD timeseries, we need to do a perfect analysis to find as many useful features as possible.
+Features of raw dataset are:
+- Open
+- Close
+- High
+- Low
+- Day of Week
+(Unfortunately "Volume" feature is missed, because none of the data providers provided proper amount of "Volume".)
+
+But these feature are not enough. We need more insightful features, like indicators, date features like specific events, holidays, and etc.
+Candidate extra features per day are:
+- Is Holiday? -> holidays data are important, because on holidays (which are not weekend), market is sort of closed, but data is available.
+- Has Event?
+- Event Sentiment
+- Moving Averages (Simple and exponentially weights)
+- Relative Strengh Index
+- Average True Range
+
+Note that evaluation of sentiments of each holiday and event is way beyond the context of this 1-day task.
+
+### Output Features
+We would also add output feature (label) for each day. Days which demonstrate a rise in EUR/USD price relative to the previous day are labelled as 1,
+and those that show a negative (or zero) deviation from previous day are labelled as -1.
+
+
