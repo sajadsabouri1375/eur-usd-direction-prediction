@@ -1,0 +1,5 @@
+alpha-vantage
+python-dotenv
+pandas
+tradermade
+yfinance
