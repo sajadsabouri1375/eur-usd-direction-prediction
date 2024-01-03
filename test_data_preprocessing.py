@@ -1,9 +1,9 @@
 '''
-    This is a test program to test main methods of Alpha Vantage data provider class.
+    This is a test program to test main methods of data preprocessing.
 '''
 
 from data_provider_alpha_vantage import DataProviderAlphaVantage, DataProviderSource
-from preprocess_data import PreprocessRawData
+from data_preprocessing import PreprocessRawData
 import unittest
 import os
 from utils import Utils
