@@ -1,19 +1,16 @@
 # Forex Direction Prediction Basilica
 This repository includes python programs required to test EUR/USD positive/negative direction prediction for Basilica company.
 
-## Get EUR/USD DATA
+## Get EUR/USD Data
 To gather required data for modelling, we need a data provider with the ability to provide historical data (for several years) at intervals of interest.
 
 There are plenty of APIs out there to provide required data:
 
     1) Alpha Vantage: Alpha Vantage provides EUR/USD candles at 1-min to monthly candles. This API is limited to 25 requests per day.
     Furtheremore, Alpha Vantage does not provide adjusted data as part of its free plan. You need a premium plan to get such data.
-
     2) Yahoo Finance: Yahoo Finance is a great data provider with less limitations than Alpha Vantage. Unfortunately this API is out of service currently.
-
     3) Trader Made: This is another data provider which returns EUR/USD historical data yearly (We need almost 20 requests to extract 20-year historical data). 
     This API provides 1000 free requests, but does not provide volume.
-
     4) YFinance: YFinance is a great library to request Forex/Cryptocurrency historical data. This library provides the longest historical data, therefore
     it is a great choice for ML modelling.
 
@@ -30,3 +27,15 @@ Vantage data provider class.
 
 Conclusion:
 Unfortunately, none of the providers tested provide "Volume" field properly. Thus, only OHLC fields of Alpha Vantage API provider would be used in modelling.
+
+## Preprocess Data
+To make sure that the downloaded timeseries is valid, we need to verify some stuff:
+
+- Renaming Fields: The raw dataset might not have proper naming. Fields' names might need to change.
+- Time Integrity: Obviously, the timeseries must have timestamps sorted in order, from the farther date, to the most recent one.
+- OHLC Integrity: Fields "Open", "Close", "High", and "Low" must have reasonable order. "High" must be the highest value, "Low" must be the lowest value, 
+"Open" and "Close" must be somewhere between "High" and "Low".
+- Missing Values: All main 4 fields of the candles must have values. If there are missing values, we need to fill them with appropriate alternatives.
+- Type Integrity: All main 4 fields must be of type float. 
+- Forex market hours are from Monday to Friday. Thus, there must not be values on Saturdays and Sundays.
+- Filterin Columns which are not useful.
