@@ -6,7 +6,7 @@ from data_provider_alpha_vantage import DataProviderAlphaVantage, DataProviderSo
 from data_preprocessing import PreprocessRawData
 import unittest
 import os
-from utils import Utils
+from utils.utils import Utils
 from dotenv import load_dotenv
 load_dotenv()
 

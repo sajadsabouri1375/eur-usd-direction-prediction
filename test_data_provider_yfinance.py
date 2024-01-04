@@ -6,7 +6,7 @@ from data_provider_yfinance import DataProviderYfinance
 from data_provider_abstract import DataProviderSource
 import unittest
 import os
-from utils import Utils
+from utils.utils import Utils
 from dotenv import load_dotenv
 load_dotenv()
 

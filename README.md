@@ -54,7 +54,8 @@ Features of raw dataset are:
 - High
 - Low
 - Day of Week
-(Unfortunately "Volume" feature is missed, because none of the data providers provided proper amount of "Volume".)
+
+Unfortunately "Volume" feature is missed, because none of the data providers provided proper amount of "Volume".
 
 But these feature are not enough. We need more insightful features, like indicators, date features like specific events, holidays, and etc.
 Candidate extra features per day are:
@@ -68,7 +69,24 @@ Candidate extra features per day are:
 Note that evaluation of sentiments of each holiday and event is way beyond the context of this 1-day task.
 
 ### Output Features
-We would also add output feature (label) for each day. Days which demonstrate a rise in EUR/USD price relative to the previous day are labelled as 1,
-and those that show a negative (or zero) deviation from previous day are labelled as -1.
+We would also add output feature (label) for each day. Days which demonstrate a significant rise in EUR/USD price relative to the previous day are labelled as 1,
+those that show a significant negative deviation from previous day are labelled as -1, and finally the days which do not have a significant change relative to previous day
+are labelled as 0.
+To find the threshold based on which the level of significance is determined, we fit a normal distribution with 0 as mean and standard deviation of the daily price changes, 
+and we find Percent Point Function (PPF) of 33% and 67%.
+Using this methodology, -0.003 and +0.003 are thresholds by which labels are determined.
 
+".py" scripts explained:
+- feature_extraction.py: This script would generate all date and indicator features which would be potentially correlated with the output feature.
+- test_feature_extraction.py: This is a test script which would test all methods of feature extraction class.
+- indicator_utils.py: This static class includes all utility funcitons which are required to calculate indicators.
 
+## Feature Selection
+To make up our mind about the final features, we need to do feature selection analysis and make sure that all features are reasonably correlated with the output feature.
+Note that finding correlations between output feature and series is not easy to visualize. Thus, we demonstrated categorical and continuous features against output
+feature by shifting data only 1 step.
+
+".py" scripts explained:
+- feature_selection.py: This script would generate all plots required to visualize correlation between input and output feature.
+- test_feature_selection.py: This is a test script which would test all methods of feature selection class.
+- plot_utils.py: This static class includes all utility funcitons which are required to plot different plots of interest.
