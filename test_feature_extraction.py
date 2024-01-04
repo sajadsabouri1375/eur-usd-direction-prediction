@@ -5,7 +5,7 @@
 from feature_extraction import FeatureExtraction
 import unittest
 import pickle
-from utils import Utils
+from utils.utils import Utils
 
 class TestFeatureExtraction(unittest.TestCase):
 
@@ -16,6 +16,7 @@ class TestFeatureExtraction(unittest.TestCase):
             cls._dataset = pickle.load(f)
 
         cls._feature_extractor = FeatureExtraction(
+            plot_saving_directory=Utils.get_path('outputs/plots/'),
             saving_directory=Utils.get_path('outputs/preprocessed_datasets/'),
             preprocessed_dataset=cls._dataset
         )

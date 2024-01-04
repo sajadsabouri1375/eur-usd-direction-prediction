@@ -22,6 +22,6 @@ class Utils:
         # If windows address
         address = os.path.join(*address.split('\\'))
 
-        root_project_dir = os.path.dirname(__file__)
+        root_project_dir = os.path.dirname(os.path.dirname(__file__))
 
         return os.path.join(root_project_dir, address)
