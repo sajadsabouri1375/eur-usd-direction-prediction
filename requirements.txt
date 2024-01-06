@@ -1,0 +1,8 @@
+alpha-vantage
+python-dotenv
+pandas
+tradermade
+yfinance
+matplotlib
+scikit-learn
+keras
