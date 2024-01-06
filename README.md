@@ -79,6 +79,7 @@ are labelled as 0.
 To find the threshold based on which the level of significance is determined, we fit a normal distribution with 0 as mean and standard deviation of the daily price changes, 
 and we find Percent Point Function (PPF) of 33% and 67%.
 Using this methodology, -0.003 and +0.003 are thresholds by which labels are determined.
+![Image Alt text](https://github.com/sajadsabouri1375/forex-direction-prediction-basilica/blob/development/outputs/plots/close_diffs_histogram.jpg "Optional title")
 
 ".py" scripts explained:
 - feature_extraction.py: This script would generate all date and indicator features which would be potentially correlated with the output feature.
@@ -89,6 +90,16 @@ Using this methodology, -0.003 and +0.003 are thresholds by which labels are det
 To make up our mind about the final features, we need to do feature selection analysis and make sure that all features are reasonably correlated with the output feature.
 Note that finding correlations between output feature and series is not easy to visualize. Thus, we demonstrated categorical and continuous features against output
 feature by shifting data only 1 step.
+
+![Image Alt text](https://github.com/sajadsabouri1375/forex-direction-prediction-basilica/blob/development/outputs/plots/categorical_features_stacked_part_01.jpg "Optional title")
+
+![Image Alt text](https://github.com/sajadsabouri1375/forex-direction-prediction-basilica/blob/development/outputs/plots/categorical_features_stacked_part_02.jpg "Optional title")
+
+![Image Alt text](https://github.com/sajadsabouri1375/forex-direction-prediction-basilica/blob/development/outputs/plots/ohlc_features_distributions.jpg "Optional title")
+
+![Image Alt text](https://github.com/sajadsabouri1375/forex-direction-prediction-basilica/blob/development/outputs/plots/ma_features_distributions.jpg "Optional title")
+
+![Image Alt text](https://github.com/sajadsabouri1375/forex-direction-prediction-basilica/blob/development/outputs/plots/atr_rsi_features_distributions.jpg "Optional title")
 
 ".py" scripts explained:
 - feature_selection.py: This script would generate all plots required to visualize correlation between input and output feature.
@@ -107,6 +118,16 @@ Confusion matrices for training and test phase are also included in /outputs/plo
 metrics are stored in metrics.json file.
 Baseline model for this project is a naive model which outputs the most frequent class all the time. The accuracy for such model would be about 33%. Thus, our model must
 outperform this baseline model with a significant difference, which it has.
+
+![Image Alt text](https://github.com/sajadsabouri1375/forex-direction-prediction-basilica/blob/development/outputs/plots/training_validation_losses.jpg "Optional title")
+
+![Image Alt text](https://github.com/sajadsabouri1375/forex-direction-prediction-basilica/blob/development/outputs/plots/training_validation_accuracies.jpg "Optional title")
+
+![Image Alt text](https://github.com/sajadsabouri1375/forex-direction-prediction-basilica/blob/development/outputs/plots/conf_matrix_training.jpg "Optional title")
+
+![Image Alt text](https://github.com/sajadsabouri1375/forex-direction-prediction-basilica/blob/development/outputs/plots/conf_matrix_validation.jpg "Optional title")
+
+![Image Alt text](https://github.com/sajadsabouri1375/forex-direction-prediction-basilica/blob/development/outputs/plots/conf_matrix_test.jpg "Optional title")
 
 ".py" scripts explained:
 - model.py: This scripts includes LstmModel which is responsible 1) to convert dataset into a set which is applicable to model architecture, 2) Design model architecture, 3) Fit model, 
