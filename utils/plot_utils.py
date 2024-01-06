@@ -3,6 +3,7 @@ import math
 import pandas as pd
 from scipy.stats import norm
 import numpy as np
+from sklearn import metrics
 
 class PlotUtils:
     
@@ -176,6 +177,20 @@ class PlotUtils:
         plt.tight_layout()
         plt.show(block=False)
         
+        plt.savefig(
+            saving_address,
+            dpi=400
+        )
+    
+    @staticmethod
+    def plot_confusion_matrix(confusion_matrix, saving_address, title):
+        
+        plt.figure(figsize=(25.6, 14.4))
+        cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels = ['Significant Drop', 'Almost Constant', 'Significant Rise'])
+        cm_display.plot(cmap='Reds')
+        plt.title(title, fontsize=15)
+        plt.tight_layout()
+        plt.show(block=False)
         plt.savefig(
             saving_address,
             dpi=400

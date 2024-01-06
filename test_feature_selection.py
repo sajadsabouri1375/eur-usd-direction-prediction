@@ -17,7 +17,7 @@ class TestFeatureSelection(unittest.TestCase):
 
         cls._feature_selector = FeatureSelection(
             plot_saving_directory=Utils.get_path('outputs/plots/'),
-            saving_directory=Utils.get_path('outputs/preprocessed_datasets/'),
+            saving_directory=Utils.get_path('outputs/datasets/'),
             features_dataset=cls._dataset
         )
         

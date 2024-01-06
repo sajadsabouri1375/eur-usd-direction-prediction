@@ -24,9 +24,10 @@ class FeatureExtraction(OperationParentAbstract):
     
     def add_holidays(self):
         start_date = self._dataset['date'].min()
-        finish_date = self._dataset['date'].max() 
+        finish_date = self._dataset['date'].max()
         cal = USFederalHolidayCalendar()
         holidays_df = pd.DataFrame(cal.holidays(start=start_date, end=finish_date).to_pydatetime(), columns=['date'])
+        holidays_df['date'] = holidays_df['date'].apply(lambda d: d.date())
         holidays_df['is_holiday'] = True    
         self._dataset = pd.merge(self._dataset, holidays_df, how='left', on='date')
         self._dataset['is_holiday'].fillna(False, inplace=True)
@@ -35,8 +36,11 @@ class FeatureExtraction(OperationParentAbstract):
         self._dataset['month_index'] = self._dataset['date'].apply(lambda d: d.month)
         
     def add_day_of_year_index(self):
-        self._dataset['day_of_year'] = self._dataset['date'].apply(lambda d: d.day_of_year)
+        self._dataset['day_of_year'] = self._dataset['datetime'].apply(lambda d: d.day_of_year)
     
+    def add_hour_of_day_index(self):
+        self._dataset['hour'] = self._dataset['datetime'].apply(lambda d: d.hour)
+        
     def add_moving_average_indicator(self):
         self._dataset = IndicatorUtils.calculate_moving_average(self._dataset, 7)
         self._dataset = IndicatorUtils.calculate_moving_average(self._dataset, 14)
@@ -54,16 +58,18 @@ class FeatureExtraction(OperationParentAbstract):
     def add_output_feature(self):
         close_diffs = self._dataset['close'].diff()
         
-        PlotUtils.plot_histogram(close_diffs, 20, os.path.join(self._plot_saving_directory, "close_diffs_histogram.jpg"))
+        PlotUtils.plot_histogram(close_diffs, 100, os.path.join(self._plot_saving_directory, "close_diffs_histogram.jpg"))
         mu, std = norm.fit(close_diffs.dropna())
-        ppf_33 = norm.ppf(0.33, loc=0, scale=std)
-        ppf_67 = norm.ppf(0.67, loc=0, scale=std)
+        ppf_33 = norm.ppf(0.4, loc=mu, scale=std)
+        ppf_66 = norm.ppf(0.6, loc=mu, scale=std)
         
-        close_diffs_labels = close_diffs.apply(lambda diff: 1 if diff > ppf_67 else (-1 if diff < ppf_33 else (0 if not np.isnan(diff) else diff)))
+        close_diffs_labels = close_diffs.apply(lambda diff: 1 if diff > ppf_66 else (-1 if diff < ppf_33 else (0 if not np.isnan(diff) else diff)))
         self._dataset['label'] = close_diffs_labels
         
     def store_dataset(self):
         
+        os.makedirs(self._saving_directory, exist_ok=True)
+
         with open(os.path.join(self._saving_directory, 'features_dataset.pickle'), 'wb') as f:
             pickle.dump(self._dataset, f)
             
@@ -75,6 +81,8 @@ class FeatureExtraction(OperationParentAbstract):
         self.add_month_index()
         
         self.add_day_of_year_index()
+        
+        self.add_hour_of_day_index()
         
         self.add_moving_average_indicator()
         

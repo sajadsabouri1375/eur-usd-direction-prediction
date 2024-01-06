@@ -7,6 +7,8 @@ from operation_abstract import OperationParentAbstract
 import pandas as pd
 from utils.plot_utils import PlotUtils
 import os
+import pickle
+from datetime import datetime
 
 
 class FeatureSelection(OperationParentAbstract):
@@ -24,17 +26,27 @@ class FeatureSelection(OperationParentAbstract):
     def plot_categorical_against_output(self):
         
         dataset_copy = self._dataset.copy()
-        dataset_copy['label_-1'] = dataset_copy['label'].shift(1).dropna()
-        categorical_features = ['day_of_week', 'month_index', 'is_holiday', 'label_-1']
+        categorical_features = ['month_index', 'day_of_week', 'hour']
         
         PlotUtils.plot_percentage_stacked(
             dataset_copy,
             categorical_features, 
-            "Categorical Features Selection",
-            os.path.join(self._plot_saving_directory, "categorical_features_stacked.jpg"),
-            number_of_columns=2
+            "Categorical Features Selection Part I",
+            os.path.join(self._plot_saving_directory, "categorical_features_stacked_part_01.jpg"),
+            number_of_columns=1
         )
     
+        dataset_copy['label_-1'] = dataset_copy['label'].shift(1).dropna()
+        categorical_features = ['is_holiday', 'label_-1']
+        
+        PlotUtils.plot_percentage_stacked(
+            dataset_copy,
+            categorical_features, 
+            "Categorical Features Selection Part II",
+            os.path.join(self._plot_saving_directory, "categorical_features_stacked_part_02.jpg"),
+            number_of_columns=2
+        )
+        
     def plot_continuous_against_output(self):
         
         dataset_copy = self._dataset.copy()
@@ -79,6 +91,25 @@ class FeatureSelection(OperationParentAbstract):
             os.path.join(self._plot_saving_directory, "atr_rsi_features_distributions.jpg"),
             number_of_columns=2
         )
+    
+    def store_dataset(self):
+        
+        os.makedirs(self._saving_directory, exist_ok=True)
+        
+        self._dataset = self._dataset.drop(
+            columns=[
+                'date',
+                'datetime',
+                'datetime_str',
+                'timestamp'
+            ]
+        )
+        
+        self._dataset = self._dataset.reset_index(drop=True)
+        
+        with open(os.path.join(self._saving_directory, 'modelling_dataset.pickle'), 'wb') as f:
+            pickle.dump(self._dataset, f)        
+        
         
     def select_features(self):
         
@@ -89,3 +120,5 @@ class FeatureSelection(OperationParentAbstract):
         self.plot_continuous_against_output()
     
         self.drop_nan_records()
+        
+        self.store_dataset()
