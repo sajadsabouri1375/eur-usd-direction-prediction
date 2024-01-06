@@ -2,7 +2,7 @@
     This is a test program to test main methods of data preprocessing.
 '''
 
-from data_provider_alpha_vantage import DataProviderAlphaVantage, DataProviderSource
+from data_provider_yfinance import DataProviderYfinance, DataProviderSource
 from data_preprocessing import PreprocessRawData
 import unittest
 import os
@@ -15,14 +15,13 @@ class TestPreprocessDataset(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         
-        cls._data_provider = DataProviderAlphaVantage(
-            saving_directory=Utils.get_path('outputs/financial_data/alpha_vantage/'),
+        cls._data_provider = DataProviderYfinance(
+            saving_directory=Utils.get_path('outputs/financial_data/yfinance/'),
             save_data_on_each_request=True,
-            data_provider_source=DataProviderSource.LOCAL,
-            api_key=os.getenv('alpha_vantage_api_key')
+            data_provider_source=DataProviderSource.LOCAL
         )
         
-        data, meta_data = cls._data_provider.get_daily_candles(symbol='EURUSD', adjusted=False)
+        data = cls._data_provider.get_hourly_candles(symbol='EURUSD=X')
         
         cls._data_preprocessor = PreprocessRawData(
             saving_directory=Utils.get_path('outputs/preprocessed_datasets/'),

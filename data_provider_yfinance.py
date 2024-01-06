@@ -43,11 +43,33 @@ class DataProviderYfinance(DataProviderAbstract):
         elif self._data_provider_source == DataProviderSource.LOCAL:
             
             if not os.path.exists(data_local_directory):
-                raise Exception('Data is never requested from Trader Made API, therefore it cannot be loaded locally. Please change to "EXTERNAL" mode for online requests.')
+                raise Exception('Data is never requested from yfinance API, therefore it cannot be loaded locally. Please change to "EXTERNAL" mode for online requests.')
                 exit()
                 
             data = self.load_data_from_local_machine(data_local_directory)
+        
+        return data
+    
+    def get_hourly_candles(self, symbol):
+        
+        data_local_directory = f"{self._saving_directory}hourly_{symbol}"
+
+        if self._data_provider_source == DataProviderSource.EXTERNAL:
+                            
+            symbol_data = yf.Ticker(symbol) 
             
+            data = symbol_data.history(period="2y", interval="60m")
+            
+            if self._save_data_on_each_request:
+                self.save_data_to_local_machine(data_local_directory, data)
+
+        elif self._data_provider_source == DataProviderSource.LOCAL:
+            
+            if not os.path.exists(data_local_directory):
+                raise Exception('Data is never requested from yfinance API, therefore it cannot be loaded locally. Please change to "EXTERNAL" mode for online requests.')
+                exit()
+                
+            data = self.load_data_from_local_machine(data_local_directory)
             
         return data
 

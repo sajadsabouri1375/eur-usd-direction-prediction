@@ -18,12 +18,17 @@ class TestYfinance(unittest.TestCase):
         cls._data_provider = DataProviderYfinance(
             saving_directory=Utils.get_path('outputs/financial_data/yfinance/'),
             save_data_on_each_request=True,
-            data_provider_source=DataProviderSource.LOCAL
+            data_provider_source=DataProviderSource.EXTERNAL
         )
 
-    def test_data_provider_yfinance(self):
+    def test_data_provider_yfinance_daily(self):
         
         data = self._data_provider.get_daily_candles(symbol='EURUSD=X')
+        self.assertGreater(data.shape[0], 0)
+    
+    def test_data_provider_yfinance_hourly(self):
+        
+        data = self._data_provider.get_hourly_candles(symbol='EURUSD=X')
         self.assertGreater(data.shape[0], 0)
         
 if __name__ == '__main__':

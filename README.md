@@ -26,7 +26,8 @@ Vantage data provider class.
 - test_data_provider_yfinance.py: This is a test scripts to test whether yfinance provides data properly or not. 
 
 Conclusion:
-Unfortunately, none of the providers tested provide "Volume" field properly. Thus, only OHLC fields of Alpha Vantage API provider would be used in modelling.
+Unfortunately, none of the providers tested provide "Volume" field properly. Thus, only OHLC fields of YFinance API for candles in 60min interval 
+for 2 years is provided. Note that YFinance does not provide data which are past more than 730 days.
 
 ## Preprocess Data
 To make sure that the downloaded timeseries is valid, we need to verify some stuff:
@@ -54,6 +55,9 @@ Features of raw dataset are:
 - High
 - Low
 - Day of Week
+- Hour of Day
+- Day of Year
+- Month Index
 
 Unfortunately "Volume" feature is missed, because none of the data providers provided proper amount of "Volume".
 
@@ -90,3 +94,21 @@ feature by shifting data only 1 step.
 - feature_selection.py: This script would generate all plots required to visualize correlation between input and output feature.
 - test_feature_selection.py: This is a test script which would test all methods of feature selection class.
 - plot_utils.py: This static class includes all utility funcitons which are required to plot different plots of interest.
+
+## Model
+To predict future EUR/USD price change direction, we used an LSTM model. LSTM is a Recurrent Neural Network (RNN) which can handle a larger history of data, which makes it
+perfect for timeseries analysis. All the input features are used as series with up to 30 step shifting. 
+The model architecture consists of an LSTM layer with 30 LSTM cells. The output layer is a softmax layer with 3 neurons to predict the class of EUR/USD price change direction.
+The output labels are "Significant Drop", "Almost Constant", and "Significant Rise".
+The moodel was fit and showed a 47% for training, 46% for validation, and 41%. Although the accuracies are not great, but we need to remember that we are modelling a 
+very complex and variant problem which is controlled by plenty of factors. The features that we currently have are not sufficient for the perfect modelling, but it is
+much better than the baseline model yet (with 33% accuracy), which shows the model is learning some real stuff.
+Confusion matrices for training and test phase are also included in /outputs/plots/ to give a better understanding of modelling. Also, accuracy, precision, recall, and F1 score
+metrics are stored in metrics.json file.
+Baseline model for this project is a naive model which outputs the most frequent class all the time. The accuracy for such model would be about 33%. Thus, our model must
+outperform this baseline model with a significant difference, which it has.
+
+".py" scripts explained:
+- model.py: This scripts includes LstmModel which is responsible 1) to convert dataset into a set which is applicable to model architecture, 2) Design model architecture, 3) Fit model, 
+4) Generate results (confusion matrix, accuracy, recall, precision), and 5) split dataset into "Trainng", "Test", and "Validation" sets.
+- test_model.py: This script runs model and tests the model accuracy againt the baseline model.

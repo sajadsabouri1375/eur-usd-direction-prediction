@@ -19,12 +19,12 @@ class PreprocessRawData:
         
         self._dataset.rename(
             columns={
-                'date': 'date_str',
-                '1. open': 'open',
-                '2. high': 'high',
-                '3. low': 'low',
-                '4. close': 'close',
-                '5. volume': 'volume'
+                'Datetime': 'datetime_str',
+                'Open': 'open',
+                'High': 'high',
+                'Low': 'low',
+                'Close': 'close',
+                'Volume': 'volume'
             },
             inplace=True
         )
@@ -35,8 +35,9 @@ class PreprocessRawData:
 
     def verify_chronological_order(self):
         
-        self._dataset['date'] = self._dataset['date_str'].apply(lambda ds: datetime.strptime(ds, '%Y-%m-%d'))
-        self._dataset['timestamp'] = self._dataset['date'].apply(lambda d: d.timestamp())
+        self._dataset['datetime'] = self._dataset['datetime_str'].apply(lambda ds: datetime.strptime(ds.split(':')[0], '%Y-%m-%d %H'))
+        self._dataset['date'] = self._dataset['datetime'].apply(lambda d: d.date())
+        self._dataset['timestamp'] = self._dataset['datetime'].apply(lambda d: d.timestamp())
         timestamps_diffs = self._dataset['timestamp'].diff()
         timestamps_diffs.dropna(inplace=True)
         timestamps_diffs_sign = timestamps_diffs.apply(lambda time_difference: time_difference > 0)
@@ -79,7 +80,7 @@ class PreprocessRawData:
     
     def verify_market_hours(self):
         
-        self._dataset['day_of_week'] = self._dataset['date'].apply(lambda d: d.day_of_week)
+        self._dataset['day_of_week'] = self._dataset['datetime'].apply(lambda d: d.day_of_week)
         
         return len(self._dataset[self._dataset['day_of_week'].isin([5, 6])]) == 0
     
@@ -89,7 +90,7 @@ class PreprocessRawData:
         dataset_copy['timestamp_diff'] = dataset_copy['timestamp'].diff()
         dataset_copy.dropna(inplace=True)
         timestamp_diffs_validation = dataset_copy.apply(
-            lambda record: record['timestamp_diff'] == 86400 if record['day_of_week'] != 0 else record['timestamp_diff'] == 259200.0,
+            lambda record: record['timestamp_diff'] == 60*60 if record['day_of_week'] != 0 else record['timestamp_diff'] == 259200.0,
             axis=1
         )
         
@@ -118,10 +119,6 @@ class PreprocessRawData:
             print('There are data points which are dated as Saturday or Sunday.')
             return False
         
-        if not self.verify_time_integrity():
-            print('Some of the market active dates data are missed.')
-            return False
-        
         if self.verify_missing_values():
             print('There are some null values in this dataset. Please fill these values.') 
             return False
@@ -132,10 +129,13 @@ class PreprocessRawData:
         
         self._dataset = self._dataset.filter(
             [
-                'date_str',
+                'datetime_str',
+                'datetime',
                 'date',
                 'timestamp',
                 'day_of_week',
+                'hour_of_day',
+                'day_of_year',
                 'open',
                 'high',
                 'low',

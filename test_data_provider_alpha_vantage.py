@@ -18,17 +18,23 @@ class TestAlphaVantage(unittest.TestCase):
         cls._data_provider = DataProviderAlphaVantage(
             saving_directory=Utils.get_path('outputs/financial_data/alpha_vantage/'),
             save_data_on_each_request=True,
-            data_provider_source=DataProviderSource.LOCAL,
+            data_provider_source=DataProviderSource.EXTERNAL,
             api_key=os.getenv('alpha_vantage_api_key')
         )
 
-    def test_data_provider_alpha_vantage(self):
+    def test_data_provider_alpha_vantage_daily(self):
         
         data, meta_data = self._data_provider.get_daily_candles(symbol='EURUSD', adjusted=False)
         
         self.assertEqual('EURUSD', meta_data['2. Symbol'])
         self.assertEqual('US/Eastern', meta_data['5. Time Zone'])
     
+    def test_data_provider_alpha_vantage_hourly(self):
+        
+        data, meta_data = self._data_provider.get_hourly_candles(symbol='EURUSD')
+        
+        self.assertEqual('EURUSD', meta_data['2. Symbol'])
+        
 if __name__ == '__main__':
     unittest.main()
     
