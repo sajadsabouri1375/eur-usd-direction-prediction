@@ -1,6 +1,11 @@
 # Forex Direction Prediction Basilica
 This repository includes python programs required to test EUR/USD positive/negative direction prediction for Basilica company.
 
+## How to Install
+To test the current program, you need to clone the repository and checkout to "main" branch (If it is not the default branch), and then install python requirements 
+at "requirements.txt" with the command "pip install -r requirements.txt".
+Then, running each of the scripts which start with "test" would run the equivalent test.
+
 ## Get EUR/USD Data
 To gather required data for modelling, we need a data provider with the ability to provide historical data (for several years) at intervals of interest.
 
